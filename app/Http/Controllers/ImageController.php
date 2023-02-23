@@ -15,7 +15,10 @@ class ImageController extends Controller
      */
     public function index()
     {
-        //
+        $students = Image::all();
+        return response()->json([
+            'student' => $students
+        ]);
     }
 
     /**
@@ -36,7 +39,6 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        // Validator::make($requ)
         $validation = $request->validate([
             'name' => 'required',
             'image' => 'required | mimes:jpg,jpeg,png'
@@ -44,7 +46,6 @@ class ImageController extends Controller
             $obj = new Image();
             if ($request->hasFile('image')) {
                 $extension = $request->file('image')->getClientOriginalExtension();
-                // $request->file('image')->storeAs('public/uploads',$name);
                 if ($extension == "png" || $extension == "jpg" || $extension == "jpeg") {
                     $image = $request->file('image');
                     $name = $image->getClientOriginalName();
@@ -60,8 +61,6 @@ class ImageController extends Controller
             }
         return response()->json([
             'errors' => $validation->all()
-            // 'name' => $validation->name,
-            // 'image' => $validation->image,
         ]);
     }
 

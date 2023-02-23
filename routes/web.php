@@ -16,5 +16,6 @@ use App\Http\Controllers\ImageController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get("index",[ImageController::class,"index"]);
 Route::get("create",[ImageController::class,"create"]);
 Route::post("store",[ImageController::class,"store"]);
