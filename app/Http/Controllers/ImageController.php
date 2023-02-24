@@ -81,9 +81,13 @@ class ImageController extends Controller
      * @param  \App\Models\Image  $image
      * @return \Illuminate\Http\Response
      */
-    public function edit(Image $image)
+    public function edit($id)
     {
-        //
+        $student = Image::find($id);
+        return response()->json([
+            'status' => 400,
+            'students' => $student
+        ]);
     }
 
     /**
@@ -93,19 +97,71 @@ class ImageController extends Controller
      * @param  \App\Models\Image  $image
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Image $image)
+    public function update(Request $request, $id)
     {
-        //
+        $validation = $request->validate([
+            'edit_name' => 'required',
+            'edit_image' => 'required | mimes:jpg,jpeg,png'
+        ]);
+            $obj = Image::find($id);
+            if ($obj) {
+                if ($request->hasFile('edit_image')) {
+                    $extension = $request->file('edit_image')->getClientOriginalExtension();
+                    if ($extension == "png" || $extension == "jpg" || $extension == "jpeg") {
+                        $image = $request->file('edit_image');
+                        $name = $image->getClientOriginalName();
+                        $image->move('assets/images/',$name);
+                        $fileName = 'assets/images/' . $name;
+                        $obj->image = $fileName;
+                    }
+                    $obj->name = $request->edit_name;
+                    $obj->save();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => "Your record has been updated...!"
+                    ]);
+                }
+        }
+        return response()->json([
+            'status' => 400,
+            'errors' => $validation->all()
+        ]);
     }
 
+    public function deleteRecord(){
+        $student = Image::find($id);
+        if ($student) {
+            return response()->json([
+                "status" => 400,
+                "students" => $student
+            ]);
+        }else {
+            return response()->json([
+                "status" => 404,
+                "error" => "Record not Found...!"
+            ]);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Image  $image
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Image $image)
+    public function destroy($id)
     {
-        //
+        $student = Image::find($id);
+        if ($student) {
+            $student->delete();
+            return response()->json([
+                "status" => 400,
+                "message" => "Record has been deleted...!"
+            ]);
+        }else {
+            return response()->json([
+                "status" => 404,
+                "error" => "Record not Found...!"
+            ]);
+        }
     }
 }

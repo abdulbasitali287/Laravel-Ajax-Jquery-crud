@@ -19,3 +19,7 @@ Route::get('/', function () {
 Route::get("index",[ImageController::class,"index"]);
 Route::get("create",[ImageController::class,"create"]);
 Route::post("store",[ImageController::class,"store"]);
+Route::get("edit/{id}",[ImageController::class,"edit"]);
+Route::post("update/{id}",[ImageController::class,"update"])->name('image.update');
+Route::get("delete/show/{id}",[ImageController::class,"deleteRecord"]);
+Route::delete("/delete/{id}",[ImageController::class,"destroy"]);
